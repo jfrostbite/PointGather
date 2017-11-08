@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PointGather</string>
+
+    <string-array name="type_item">
+        <item>不参与识别</item>
+        <item>参与识别</item>
+    </string-array>
+</resources>
