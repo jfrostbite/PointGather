@@ -19,7 +19,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {url 'http://YMHFQ5QFYELICIM:8081/repository/kevin_hosted/'}
+        maven {url LOCAL_REPO_URL}
     }
 }
 
