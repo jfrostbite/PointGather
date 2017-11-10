@@ -52,8 +52,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'com.myscript.atk:core:2.2'
     compile 'com.myscript.atk:im:2.2'
-    compile 'com.myscript.atk:Widget:2.2'
-    compile 'com.myscript.atk:Text:2.2'
+    compile 'com.myscript.atk:widget:2.2'
+    compile 'com.myscript.atk:text:2.2'
 }
 
 uploadArchives {
@@ -61,7 +61,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             // 私有仓库的地址，以及账户
-            repository(url: LOCAL_REPO_URL) {
+            repository(url: 'http://192.168.1.183:8001/nexus/content/repositories/Kevin/') {
                 authentication(userName: 'admin', password: 'admin123')
             }
             // Library的配置

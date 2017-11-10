@@ -32,8 +32,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.support:design:26.1.0'
-    //    implementation 'com.kevin.identify:identify:1.0.9'
-    implementation project(':identify')
+        implementation 'com.kevin.identify:identify:1.1.0'
+//    implementation project(':identify')
     compile project(path: ':sellib')
 //    implementation(name: 'ticked-1.0', ext: 'aar')
 }
