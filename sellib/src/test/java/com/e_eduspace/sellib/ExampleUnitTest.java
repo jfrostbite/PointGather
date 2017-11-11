@@ -1,11 +1,18 @@
 package com.e_eduspace.sellib;
 
+import android.os.SystemClock;
+
 import com.e_eduspace.sellib.entity.Question;
 import com.e_eduspace.sellib.entity.TickedTag;
 
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,6 +26,25 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
 
+//        test();
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<String> submit = executor.submit(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                if (true) {
+                    throw new FileNotFoundException();
+                }
+                return Thread.currentThread().getName();
+            }
+        });
+
+        String s = submit.get();
+        System.out.println(s);
+
+    }
+
+    private void test() {
         String[] tits = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"};
         ArrayList<TickedTag> tags = new ArrayList<>();
         for (int i = 0; i < 20; i++) {

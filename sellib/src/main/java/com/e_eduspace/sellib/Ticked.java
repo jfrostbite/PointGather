@@ -20,8 +20,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by Administrator on 2017/10/31.
@@ -46,6 +49,7 @@ public class Ticked {
     private Ticked(Builder builder) {
         mSaltInterceptor = builder.mSaltInterceptor;
         mExecutor = Executors.newSingleThreadExecutor();
+        mListener = builder.mListener;
         config();
 
     }
@@ -95,73 +99,73 @@ public class Ticked {
      */
     private void config() {
 
-        mExecutor.submit(new Runnable() {
+        Future<String[]> future = mExecutor.submit(new Callable<String[]>() {
             @Override
-            public void run() {
-                try {
-                    byte[] bytes = openAssets(getClass().getResourceAsStream(Constants.CONFIG_PATH + Constants.CONFIG_JSON));
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(bytes)));
-                    String line = "";
-                    StringBuilder sb = new StringBuilder();
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    if (mSaltInterceptor != null) {
-                        //解析数据
-                        config(mSaltInterceptor.salt(sb.toString().split(Constants.CONFIG_SPLIT)));
-                    }
-
-                    //配置数据库文件
-                    File db = new File(Constants.CONFIG_SD_PATH);
-                    if (!db.exists()) {
-                        if (!db.mkdirs()) {
-                            throw new FileNotFoundException(Constants.CONFIG_PATH + " create failed");
-                        }
-                    }
-                    File file = new File(Constants.CONFIG_SD_DB);
-                    if (!file.exists()) {
-                        if (!file.createNewFile()) {
-                            throw new FileNotFoundException(Constants.CONFIG_DB + " create failed");
-                        }
-                    }
-                    //强行更新文件
-                    FileOutputStream fos = new FileOutputStream(file);
-                    bytes = openAssets(getClass().getResourceAsStream(Constants.CONFIG_PATH + Constants.CONFIG_DB));
-                    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-                    int len = -1;
-                    byte[] temp = new byte[1024];
-                    while ((len = bais.read(temp)) > -1) {
-                        fos.write(temp, 0, len);
-                    }
-                    bais.close();
-                    fos.close();
-                    mDB = new TickedDB(file.getPath());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("TICKED", e.getMessage());
-                    if (mListener != null) {
-                        mListener.onError("配置文件加载失败，"+e.getMessage());
+            public String[] call() throws Exception {
+                String[] strings = new String[2];
+                byte[] bytes = openAssets(getClass().getResourceAsStream(Constants.CONFIG_PATH + Constants.CONFIG_JSON));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(bytes)));
+                String line = "";
+                StringBuilder sb = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+                strings[0] = sb.toString();
+                //配置数据库文件
+                File db = new File(Constants.CONFIG_SD_PATH);
+                if (!db.exists()) {
+                    if (!db.mkdirs()) {
+                        throw new FileNotFoundException(Constants.CONFIG_PATH + " create failed");
                     }
                 }
+                File file = new File(Constants.CONFIG_SD_DB);
+                if (!file.exists()) {
+                    if (!file.createNewFile()) {
+                        throw new FileNotFoundException(Constants.CONFIG_DB + " create failed");
+                    }
+                }
+                //强行更新文件
+                FileOutputStream fos = new FileOutputStream(file);
+                bytes = openAssets(getClass().getResourceAsStream(Constants.CONFIG_PATH + Constants.CONFIG_DB));
+                ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                int len = -1;
+                byte[] temp = new byte[1024];
+                while ((len = bais.read(temp)) > -1) {
+                    fos.write(temp, 0, len);
+                }
+                bais.close();
+                fos.close();
+                strings[1] = file.getPath();
+                return strings;
             }
         });
+
+        try {
+            String[] strings = future.get();
+            if (mSaltInterceptor != null) {
+                //解析数据
+                config(mSaltInterceptor.salt(strings[0].split(Constants.CONFIG_SPLIT)));
+            }
+            mDB = new TickedDB(strings[1]);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("TICKED", e.getMessage());
+            if (mListener != null) {
+                mListener.onError("config is Failure" + e.getMessage());
+            }
+        }
     }
 
-    private byte[] openAssets(InputStream is) {
+    private byte[] openAssets(InputStream is) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            int len = -1;
-            byte[] bytes = new byte[1024];
-            while ((len = is.read(bytes)) > -1) {
-                baos.write(bytes, 0, len);
-            }
-            is.close();
-            baos.close();
-            return baos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+        int len = -1;
+        byte[] bytes = new byte[1024];
+        while ((len = is.read(bytes)) > -1) {
+            baos.write(bytes, 0, len);
         }
-        return null;
+        is.close();
+        baos.close();
+        return baos.toByteArray();
     }
 
     public Ticked dispose(@NonNull final TickedStroke stroke) {
@@ -190,7 +194,7 @@ public class Ticked {
                     }
                 } else {
                     if (mListener != null) {
-                        mListener.onError("SD卡读写权限错误");
+                        mListener.onError("配置文件加载错误");
                     }
                 }
             }
@@ -201,6 +205,7 @@ public class Ticked {
     /**
      * 实时匹配
      * 10     115    41  121
+     *
      * @param result
      */
     private void match(TickedTag result) {
@@ -232,15 +237,11 @@ public class Ticked {
         mFirstTime = 0;
     }
 
-    public void disCharge (){
+    public void disCharge() {
         clean();
         if (mExecutor != null && !mExecutor.isShutdown()) {
             mExecutor.shutdown();
         }
-    }
-
-    public void setOnTickedLisener(OnTickedListener listener) {
-        mListener = listener;
     }
 
     public interface OnTickedListener {
@@ -257,9 +258,16 @@ public class Ticked {
     public static class Builder {
 
         private TickedInterceptor<String, List<TickedTag>> mSaltInterceptor;
+        private OnTickedListener mListener;
 
         public Builder addSalt(TickedInterceptor<String, List<TickedTag>> interceptor) {
             mSaltInterceptor = interceptor;
+            return this;
+        }
+
+        public Builder addListener(OnTickedListener listener) {
+
+            mListener = listener;
             return this;
         }
 

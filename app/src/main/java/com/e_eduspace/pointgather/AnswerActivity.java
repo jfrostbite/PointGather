@@ -49,6 +49,13 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
         //打开书写通道
         mAPI.setOnPointListener(mPointListener);
 
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable) {
+
+            }
+        });
+
         initTicked();
     }
 
@@ -61,8 +68,7 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
                 }.getType());
                 return tickedTags;
             }
-        }).build();
-        mTicked.setOnTickedLisener(this);
+        }).addListener(this).build();
     }
 
     private void initView() {
