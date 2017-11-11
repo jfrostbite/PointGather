@@ -43,6 +43,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2017/11/1.
@@ -270,11 +271,16 @@ public abstract class TopActivity extends AppCompatActivity implements BluAction
         @Override
         public void onHistroyInfoDetected() {
             //有历史信息 删除历史信息
-            mLe.sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
             ProgressDialog.Builder builder = new ProgressDialog.Builder(TopActivity.this);
             mAlertDialog = builder.setMessage("History information is detected, deleting...").create();
             mAlertDialog.show();
-            openWritedChannel();
+            Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("发送清空电量监听");
+                    mLe.sendBleInstruct(BluetoothLe.EMPTY_STORAGE_DATA);
+                }
+            }, 3000, TimeUnit.MILLISECONDS);
         }
 
         @Override
@@ -282,6 +288,7 @@ public abstract class TopActivity extends AppCompatActivity implements BluAction
             //历史信息情况完毕
             mAlertDialog.dismiss();
             mAlertDialog = null;
+            openWritedChannel();
         }
     };
 

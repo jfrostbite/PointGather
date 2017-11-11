@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 解决up点的问题，计时器超时判断
@@ -125,13 +127,20 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
     @Override
     protected void openWritedChannel() {
         super.openWritedChannel();
-        mLe.sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+        Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("发送书写通道");
+                mLe.sendBleInstruct(BluetoothLe.OPEN_WRITE_CHANNEL);
+            }
+        }, 3000, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void onTicked(TickedTag tag) {
         mTag = tag;
-        Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(tag));
+        List<String> answer = mTag.answer();
+        Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(answer));
     }
 
     @Override
@@ -141,6 +150,11 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
 
     @Override
     public void onCompleted(List<TickedTag> tags, long l) {
+        for (TickedTag tag : tags) {
+            for (String s : tag.answer()) {
+                Log.e("答案", s);
+            }
+        }
 //        Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(mTag));
         Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(tags));
         Log.e("AnswerActivity", "答题时间："+l);

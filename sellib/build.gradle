@@ -1,9 +1,10 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+
+def libVerName = PROJ_TICKED_VER
 
 android {
     compileSdkVersion 26
-
-
 
     defaultConfig {
         minSdkVersion 19
@@ -17,11 +18,30 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
+}
+uploadArchives {
+    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+            // 私有仓库的地址，以及账户
+            repository(url: 'http://192.168.1.183:8001/nexus/content/repositories/Kevin/') {
+                authentication(userName: 'admin', password: 'admin123')
+            }
+            // Library的配置
+            pom.project {
+                version libVerName
+                artifactId PROJ_TICKED_ARTIFACTID
+                groupId PROJ_TICKED_GROUP
+                packaging PROJ_TICKED_TYPE
+                description PROJ_TICKED_DES
+            }
+        }
+    }
 }
 
 dependencies {

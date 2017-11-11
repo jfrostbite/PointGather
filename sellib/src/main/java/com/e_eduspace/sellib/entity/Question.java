@@ -12,7 +12,7 @@ import java.util.List;
 public class Question extends TickedTag {
     private final String[] ANSWERS = {"A","B","C","D","E"};
 
-    private List<String> answerList = new ArrayList<>();;
+    private List<String> answerList = new ArrayList<>();
     private List<TickedStroke> strokes;
 
     @Override

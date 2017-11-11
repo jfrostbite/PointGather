@@ -1,1 +1,1 @@
-include ':app', ':sellib'
+include ':app', 'identify', ':sellib'
