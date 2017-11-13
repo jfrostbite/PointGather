@@ -212,7 +212,7 @@ public class Ticked {
         if (Constants.SUBMIT_FLAG == result.loc) {
             if (mListener != null) {
                 mListener.onCompleted(mQues, System.currentTimeMillis() - mFirstTime);
-                clean();
+//                clean();
             }
             return;
         }

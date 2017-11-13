@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class DBManager {
 
     SQLiteDatabase mSQLiteDatabase;
-    boolean mOpen_write;
+    boolean mOpen_write = true;
 
     public DBManager init(Context context){
         init(context,false);

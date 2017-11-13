@@ -46,7 +46,7 @@ public class MainActivity extends TopActivity {
         setContentView(R.layout.activity_main);
         initView();
         super.onCreate(savedInstanceState);
-        mAPI.setBookSize(109, 153);
+        mAPI.setBookSize(210, 297);
         initIdentify();
         registObserver();
     }
@@ -59,7 +59,7 @@ public class MainActivity extends TopActivity {
     }
 
     private void initIdentify() {
-        mBuild = new IDentifyMulti.Builder(this, null, true).build();
+        mBuild = new IDentifyMulti.Builder(this, null, true).openWriteDB().build();
         //初始化最后录入状态
         mExecutor = Executors.newSingleThreadExecutor();
     }

@@ -47,7 +47,7 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
         setContentView(R.layout.activity_answer);
         initView();
         super.onCreate(savedInstanceState);
-        mAPI.setBookSize(155, 207);
+        mAPI.setBookSize(155, 210);
         //打开书写通道
         mAPI.setOnPointListener(mPointListener);
 
