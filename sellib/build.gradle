@@ -1,11 +1,7 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
-
-def libVerName = PROJ_TICKED_VER
 
 android {
     compileSdkVersion 26
-
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 26
@@ -24,31 +20,14 @@ android {
     }
 
 }
-uploadArchives {
-    configuration = configurations.archives
-    repositories {
-        mavenDeployer {
-            // 私有仓库的地址，以及账户
-            repository(url: 'http://192.168.1.183:8001/nexus/content/repositories/Kevin/') {
-                authentication(userName: 'admin', password: 'admin123')
-            }
-            // Library的配置
-            pom.project {
-                version libVerName
-                artifactId PROJ_TICKED_ARTIFACTID
-                groupId PROJ_TICKED_GROUP
-                packaging PROJ_TICKED_TYPE
-                description PROJ_TICKED_DES
-            }
-        }
-    }
-}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+apply from: '../config.gradle'
+
