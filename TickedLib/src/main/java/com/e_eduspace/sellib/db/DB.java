@@ -2,6 +2,7 @@ package com.e_eduspace.sellib.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.RectF;
 
 import com.e_eduspace.sellib.entity.TickedPoint;
 import com.e_eduspace.sellib.entity.TickedTag;
@@ -30,4 +31,11 @@ public abstract class DB {
      * @return
      */
     public abstract TickedTag query(TickedPoint tickedPoint, String... values);
+
+    /**
+     * 获取提交范围
+     * @param pageIndex
+     * @return
+     */
+    public abstract RectF query(int pageIndex);
 }

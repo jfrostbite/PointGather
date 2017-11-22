@@ -1,5 +1,6 @@
 package com.e_eduspace.sellib;
 
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -14,14 +15,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -41,7 +40,7 @@ public class Ticked {
     private List<TickedTag> mTags;
     private OnTickedListener mListener;
     //题集
-    private List<TickedTag> mQues = new ArrayList<>();
+    public List<TickedTag> mQues = new ArrayList<>();
 
     private TickedInterceptor<String, List<TickedTag>> mSaltInterceptor;
     private long mFirstTime;
@@ -274,5 +273,15 @@ public class Ticked {
         public Ticked build() {
             return new Ticked(this);
         }
+    }
+
+    public RectF takeSubRectF() {
+        if (mTags == null || mTags.isEmpty()) {
+            if (mListener != null) {
+                mListener.onError("tag config is empty");
+            }
+            return null;
+        }
+        return mDB.query(mTags.get(0).page);
     }
 }

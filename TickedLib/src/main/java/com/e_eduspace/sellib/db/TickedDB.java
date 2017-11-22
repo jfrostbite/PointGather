@@ -21,6 +21,7 @@ public class TickedDB extends DB {
 
     /**
      * 打开数据库
+     *
      * @param path
      */
     public TickedDB(String path) {
@@ -51,5 +52,24 @@ public class TickedDB extends DB {
             }
         }
         return tag;
+    }
+
+    @Override
+    public RectF query(int pageIndex) {
+        RectF rectF = null;
+        if (mSQLiteDatabase != null) {
+            Cursor cursor = mSQLiteDatabase.query(Constants.TAB_NAME, new String[]{}, Constants.POINT_PAGE + "= ? and " + Constants.POINT_LOC + "= ?", new String[]{String.valueOf(pageIndex), String.valueOf(Constants.SUBMIT_FLAG)}, null, null, null);
+            if (cursor != null && cursor.moveToNext()) {
+                float minX = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MINX));
+                float minY = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MINY));
+                float maxX = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MAXX));
+                float maxY = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MAXY));
+                rectF = new RectF(minX, minY, maxX, maxY);
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return rectF;
     }
 }

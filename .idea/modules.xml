@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PointGather.iml" filepath="$PROJECT_DIR$/PointGather.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TickedLib/sellib.iml" filepath="$PROJECT_DIR$/TickedLib/sellib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/identify/identify.iml" filepath="$PROJECT_DIR$/identify/identify.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sellib/sellib.iml" filepath="$PROJECT_DIR$/sellib/sellib.iml" />
     </modules>
   </component>
 </project>

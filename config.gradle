@@ -5,6 +5,9 @@ apply plugin: 'com.jfrog.bintray'
 def siteUrl = 'https://github.com/jfrostbite/PointGather'
 def gitUrl = 'https://github.com/jfrostbite/PointGather.git'
 
+group = 'com.kevin.ticked'  // 一般写唯一的包名
+version = '1.6.1'  // 版本号
+
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
@@ -51,7 +54,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'Ticked'
+                name 'Ticked for e_eduspace'
                 url siteUrl
                 licenses {
                     license {
@@ -61,8 +64,8 @@ install {
                 }
                 developers {
                     developer {
-                        id 'ticket'
-                        name 'com.kevin.ticket'
+                        id 'ticked'
+                        name 'com.kevin.ticked'
                         email 'jf4044@163.com'
                     }
                 }
