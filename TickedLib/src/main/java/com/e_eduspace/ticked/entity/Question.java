@@ -1,6 +1,6 @@
-package com.e_eduspace.sellib.entity;
+package com.e_eduspace.ticked.entity;
 
-import com.e_eduspace.sellib.Constants;
+import com.e_eduspace.ticked.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

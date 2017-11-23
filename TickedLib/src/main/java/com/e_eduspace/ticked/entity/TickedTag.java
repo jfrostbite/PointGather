@@ -1,4 +1,4 @@
-package com.e_eduspace.sellib.entity;
+package com.e_eduspace.ticked.entity;
 
 import java.util.List;
 

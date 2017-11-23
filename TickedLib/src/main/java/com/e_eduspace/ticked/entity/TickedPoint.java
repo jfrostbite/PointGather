@@ -1,4 +1,4 @@
-package com.e_eduspace.sellib.entity;
+package com.e_eduspace.ticked.entity;
 
 /**
  * Created by Administrator on 2017/10/31.

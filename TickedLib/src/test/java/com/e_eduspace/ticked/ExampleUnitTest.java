@@ -1,9 +1,7 @@
-package com.e_eduspace.sellib;
+package com.e_eduspace.ticked;
 
-import android.os.SystemClock;
-
-import com.e_eduspace.sellib.entity.Question;
-import com.e_eduspace.sellib.entity.TickedTag;
+import com.e_eduspace.ticked.entity.Question;
+import com.e_eduspace.ticked.entity.TickedTag;
 
 import org.junit.Test;
 

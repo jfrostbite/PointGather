@@ -1,11 +1,11 @@
-package com.e_eduspace.sellib;
+package com.e_eduspace.ticked;
 
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.e_eduspace.sellib.db.TickedDB;
-import com.e_eduspace.sellib.entity.TickedTag;
+import com.e_eduspace.ticked.db.TickedDB;
+import com.e_eduspace.ticked.entity.TickedTag;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

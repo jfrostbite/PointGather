@@ -1,4 +1,4 @@
-package com.e_eduspace.sellib;
+package com.e_eduspace.ticked;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

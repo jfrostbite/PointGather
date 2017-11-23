@@ -1,4 +1,4 @@
-package com.e_eduspace.sellib;
+package com.e_eduspace.ticked;
 
 import android.os.Environment;
 

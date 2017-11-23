@@ -1,10 +1,10 @@
-package com.e_eduspace.sellib.db;
+package com.e_eduspace.ticked.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.RectF;
 
-import com.e_eduspace.sellib.entity.TickedTag;
+import com.e_eduspace.ticked.entity.TickedTag;
 
 /**
  * Created by Administrator on 2017/10/31.

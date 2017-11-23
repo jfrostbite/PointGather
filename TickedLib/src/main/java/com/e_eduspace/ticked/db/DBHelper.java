@@ -1,10 +1,10 @@
-package com.e_eduspace.sellib.db;
+package com.e_eduspace.ticked.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.e_eduspace.sellib.Constants;
+import com.e_eduspace.ticked.Constants;
 
 
 /**
