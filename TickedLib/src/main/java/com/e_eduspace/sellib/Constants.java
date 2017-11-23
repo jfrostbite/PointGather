@@ -33,6 +33,11 @@ public interface Constants {
     String POINT_MAXY = "maxY";
     String POINT_PAGE = "page";
 
+    String POINT_SET_PX = "setPX";
+    String POINT_SET_PY = "setPY";
+    String POINT_GET_PX = "getPX";
+    String POINT_GET_PY = "getPY";
+
     java.lang.String DB_CREATE = "create table '" + TAB_NAME + "' ('"
             + POINT_ID + "' integer primary key autoincrement unique, '"
             + POINT_TITLE + "' text, '"

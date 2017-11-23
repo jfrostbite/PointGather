@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.RectF;
 
-import com.e_eduspace.sellib.entity.TickedPoint;
 import com.e_eduspace.sellib.entity.TickedTag;
 
 /**
@@ -27,10 +26,11 @@ public abstract class DB {
 
     /**
      * 查询点loc
-     * @param tickedPoint
+     * @param x
+     * @param y
      * @return
      */
-    public abstract TickedTag query(TickedPoint tickedPoint, String... values);
+    public abstract TickedTag query(float x, float y, String... values);
 
     /**
      * 获取提交范围

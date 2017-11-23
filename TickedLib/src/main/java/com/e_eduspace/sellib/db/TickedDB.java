@@ -6,7 +6,6 @@ import android.graphics.RectF;
 
 import com.e_eduspace.sellib.Constants;
 import com.e_eduspace.sellib.entity.Question;
-import com.e_eduspace.sellib.entity.TickedPoint;
 import com.e_eduspace.sellib.entity.TickedTag;
 
 /**
@@ -29,7 +28,7 @@ public class TickedDB extends DB {
     }
 
     @Override
-    public TickedTag query(TickedPoint tickedPoint, String... values) {
+    public TickedTag query(float x, float y, String... values) {
         int loc = -1;
         TickedTag tag = null;
         if (mSQLiteDatabase != null) {
@@ -39,7 +38,7 @@ public class TickedDB extends DB {
                 float minY = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MINY));
                 float maxX = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MAXX));
                 float maxY = cursor.getFloat(cursor.getColumnIndex(Constants.POINT_MAXY));
-                if (new RectF(minX, minY, maxX, maxY).contains(tickedPoint.getPX(), tickedPoint.getPY())) {
+                if (new RectF(minX, minY, maxX, maxY).contains(x, y)) {
                     tag = new Question();
                     tag.title = values[0];
                     tag.page = Integer.parseInt(values[1]);

@@ -7,8 +7,6 @@ import android.widget.Toast;
 import com.e_eduspace.sellib.Ticked;
 import com.e_eduspace.sellib.TickedInterceptor;
 import com.e_eduspace.sellib.entity.Question;
-import com.e_eduspace.sellib.entity.TickedPoint;
-import com.e_eduspace.sellib.entity.TickedStroke;
 import com.e_eduspace.sellib.entity.TickedTag;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,9 +32,9 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
     //题集
     private List<ChoiceQuestion> mQues = Collections.emptyList();
     //当前书写线
-    private TickedStroke currentStroke;
+//    private TickedStroke currentStroke;
     //当前点集
-    private List<TickedPoint> currentPoints;
+    private List<NotePoint> currentPoints;
     private Ticked mTicked;
     //重选标记
     private final int REELECT = 5;
@@ -91,11 +89,11 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
                 return null;
             }
         });
-        currentStroke = new StrokeBean();
-        currentStroke.setPageIndex(notePoint.getPageIndex());
+//        currentStroke = new StrokeBean();
+//        currentStroke.setPageIndex(notePoint.getPageIndex());
 
         currentPoints = new ArrayList<>();
-        currentPoints.add(PointBean.getTickedPoint(notePoint));
+        currentPoints.add(notePoint);
     }
 
     @Override
@@ -107,7 +105,7 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
                 return null;
             }
         });
-        currentPoints.add(PointBean.getTickedPoint(notePoint));
+        currentPoints.add(notePoint);
     }
 
     @Override
@@ -119,8 +117,8 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
                 return null;
             }
         });
-        currentStroke.setPointList(currentPoints);
-        mTicked.dispose(currentStroke);
+//        currentStroke.setPointList(currentPoints);
+        mTicked.dispose(currentPoints);
 
     }
 

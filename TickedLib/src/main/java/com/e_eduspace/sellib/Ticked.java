@@ -5,8 +5,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.e_eduspace.sellib.db.TickedDB;
-import com.e_eduspace.sellib.entity.TickedPoint;
-import com.e_eduspace.sellib.entity.TickedStroke;
 import com.e_eduspace.sellib.entity.TickedTag;
 
 import java.io.BufferedReader;
@@ -17,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +28,12 @@ import java.util.concurrent.Future;
 /**
  * Created by Administrator on 2017/10/31.
  * 接受点线集合，直接操作缓存，不做本地处理
+ * <p>
+ * 简化模块集成难度。
+ * <p>
+ * 思路： 模块需要传入模块定义点线实体，第三方调用需要实现该操作，中间有点与点的转换操作，降低效率，增加集成难度
+ * <p>
+ * 解决以上思路，利用反射定义位置类
  */
 
 public class Ticked {
@@ -56,11 +62,10 @@ public class Ticked {
     /**
      * 获取平均点
      */
-    private TickedPoint validPoint(List<? extends TickedPoint> notePoints) {
+    private float[] validPoint(List<? extends Object> notePoints) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if (notePoints == null || notePoints.isEmpty()) {
             return null;
         }
-        TickedPoint tickedPointEntity = (TickedPoint) notePoints.get(0).newInstance();
 //        notePoints = notePoints.subList(notePoints.size() / 3, notePoints.size());
         int size = notePoints.size()/* > 10 ? 10 : notePoints.size()*/;
         float[] pxs = new float[size];
@@ -69,8 +74,11 @@ public class Ticked {
         float sumY = 0f;
         for (int i = 0; i < size; i++) {
             int anInt = new Random().nextInt(notePoints.size());
-            pxs[i] = notePoints.get(anInt).getPX();
-            pys[i] = notePoints.get(anInt).getPY();
+            Object point = notePoints.get(anInt);
+            Method getPx = point.getClass().getDeclaredMethod(Constants.POINT_GET_PX);
+            Method getPy = point.getClass().getDeclaredMethod(Constants.POINT_GET_PY);
+            pxs[i] = (float) getPx.invoke(point);
+            pys[i] = (float) getPy.invoke(point);
         }
 
         for (float px : pxs) {
@@ -80,9 +88,7 @@ public class Ticked {
             sumY += py;
         }
 
-        tickedPointEntity.setPX(sumX / size - mCompensation[0]);
-        tickedPointEntity.setPY(sumY / size - mCompensation[1]);
-        return tickedPointEntity;
+        return new float[]{sumX / size - mCompensation[0], sumY / size - mCompensation[1]};
     }
 
     /**
@@ -167,37 +173,41 @@ public class Ticked {
         return baos.toByteArray();
     }
 
-    public Ticked dispose(@NonNull final TickedStroke stroke) {
+    public Ticked dispose(@NonNull final List<? extends Object> stroke) {
         if (mFirstTime == 0) {
             mFirstTime = System.currentTimeMillis();
         }
-        mExecutor.submit(new Runnable() {
+
+        Future<TickedTag> tickedTagFuture = mExecutor.submit(new Callable<TickedTag>() {
             @Override
-            public void run() {
-                List<? extends TickedPoint> points = stroke.getPointList();
-                TickedPoint point = validPoint(points);
-                if (mDB != null && mTags != null) {
-                    TickedTag result = null;
-                    for (TickedTag tag : mTags) {
-                        result = mDB.query(point, tag.title, String.valueOf(tag.page));
-                        if (result != null) {//匹配到结果
-                            break;
-                        }
-                    }
+            public TickedTag call() throws Exception {
+                float[] point = validPoint(stroke);
+                TickedTag result = null;
+                for (TickedTag tag : mTags) {
+                    result = mDB.query(point[0], point[1], tag.title, String.valueOf(tag.page));
                     if (result != null) {//匹配到结果
-                        match(result);
-                    } else {
-                        if (mListener != null) {
-                            mListener.onError("请在制定区域作答");
-                        }
-                    }
-                } else {
-                    if (mListener != null) {
-                        mListener.onError("配置文件加载错误");
+                        return result;
                     }
                 }
+                return null;
             }
         });
+
+        try {
+            TickedTag tickedTag = tickedTagFuture.get();
+            if (tickedTag != null) {
+                match(tickedTag);
+            } else {
+                if (mListener != null) {
+                    mListener.onError("error range");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (mListener != null) {
+                mListener.onError(e.getLocalizedMessage());
+            }
+        }
         return this;
     }
 
