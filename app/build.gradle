@@ -33,9 +33,9 @@ dependencies {
     })
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.kevin.identify:identify:1.1.0'
-//    implementation 'com.kevin.ticked:Ticked:1.6.0'
+    implementation 'com.kevin.ticked:TickedLib:1.6.2'
 //    implementation project(':identify')
-    compile project(path: ':TickedLib')
+//    compile project(path: ':TickedLib')
 //    implementation 'com.kevin.ticked:Ticked:1.3.0'
 //    implementation(name: 'ticked-1.0', ext: 'aar')
 }
