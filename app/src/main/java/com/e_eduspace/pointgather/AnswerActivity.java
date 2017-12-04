@@ -2,12 +2,12 @@ package com.e_eduspace.pointgather;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
 
-import com.e_eduspace.sellib.Ticked;
-import com.e_eduspace.sellib.TickedInterceptor;
-import com.e_eduspace.sellib.entity.Question;
-import com.e_eduspace.sellib.entity.TickedTag;
+import com.e_eduspace.ticked.Ticked;
+import com.e_eduspace.ticked.TickedInterceptor;
+import com.e_eduspace.ticked.entity.Question;
+import com.e_eduspace.ticked.entity.TickedTag;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 解决up点的问题，计时器超时判断
  */
-public class AnswerActivity extends TopActivity implements Ticked.OnTickedListener {
+public class AnswerActivity extends TopActivity implements Ticked.OnTickedListener, View.OnClickListener {
 
     private DrawingBoardView mBoardView;
 
@@ -73,6 +73,7 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
 
     private void initView() {
         mBoardView = findViewById(R.id.dbv);
+        mBoardView.setOnClickListener(this);
     }
 
     @Override
@@ -110,7 +111,6 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
 
     @Override
     protected void onPointUp(NotePoint notePoint) {
-        Toast.makeText(this, "抬起点", Toast.LENGTH_SHORT).show();
         mExecutor.submit(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -138,7 +138,7 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
     public void onTicked(TickedTag tag) {
         mTag = tag;
         List<String> answer = mTag.answer();
-        Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(answer));
+        Log.e("AnswerActivity", tag.title + "：" +new GsonBuilder().serializeNulls().create().toJson(answer));
     }
 
     @Override
@@ -148,14 +148,16 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
 
     @Override
     public void onCompleted(List<TickedTag> tags, long l) {
-        for (TickedTag tag : tags) {
-            for (String s : tag.answer()) {
-                Log.e("答案", s);
-            }
+        for (int i = 0; i < tags.size(); i++) {
+            TickedTag tag = tags.get(i);
+            List<String> answer = tag.answer();
+            Log.e((i + 1) + "---第" + tag.title + "题答案", new GsonBuilder().serializeNulls().create().toJson(answer));
         }
+
 //        Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(mTag));
         Log.e("AnswerActivity", new GsonBuilder().serializeNulls().create().toJson(tags));
-        Log.e("AnswerActivity", "答题时间："+l);
+        Log.e("AnswerActivity", "答题时间：" + l);
+        mTicked.clean();
     }
 
     @Override
@@ -163,6 +165,15 @@ public class AnswerActivity extends TopActivity implements Ticked.OnTickedListen
         super.onDestroy();
         if (mTicked != null) {
             mTicked.disCharge();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.dbv:
+                mBoardView.clearCanvars();
+                break;
         }
     }
 }

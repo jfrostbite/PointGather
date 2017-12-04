@@ -18,6 +18,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -70,8 +73,6 @@ public class Ticked {
         int size = notePoints.size()/* > 10 ? 10 : notePoints.size()*/;
         float[] pxs = new float[size];
         float[] pys = new float[size];
-        float sumX = 0f;
-        float sumY = 0f;
         for (int i = 0; i < size; i++) {
             int anInt = new Random().nextInt(notePoints.size());
             Object point = notePoints.get(anInt);
@@ -81,14 +82,13 @@ public class Ticked {
             pys[i] = (float) getPy.invoke(point);
         }
 
-        for (float px : pxs) {
-            sumX += px;
-        }
-        for (float py : pys) {
-            sumY += py;
-        }
+        Arrays.sort(pxs);
+        Arrays.sort(pys);
 
-        return new float[]{sumX / size - mCompensation[0], sumY / size - mCompensation[1]};
+        RectF rectF = new RectF(pxs[0], pys[0], pxs[size - 1], pys[size - 1]);
+        rectF.sort();
+
+        return new float[]{rectF.centerX(), rectF.centerY()};
     }
 
     /**
@@ -174,6 +174,12 @@ public class Ticked {
     }
 
     public Ticked dispose(@NonNull final List<? extends Object> stroke) {
+        if (stroke.isEmpty()) {
+            if (mListener != null) {
+                mListener.onError("stroke does not Empty");
+            }
+            return this;
+        }
         if (mFirstTime == 0) {
             mFirstTime = System.currentTimeMillis();
         }
@@ -219,9 +225,14 @@ public class Ticked {
      */
     private void match(TickedTag result) {
         if (Constants.SUBMIT_FLAG == result.loc) {
+            Collections.sort(mQues, new Comparator<TickedTag>() {
+                @Override
+                public int compare(TickedTag tickedTag, TickedTag t1) {
+                    return Integer.parseInt(tickedTag.title) - Integer.parseInt(t1.title);
+                }
+            });
             if (mListener != null) {
                 mListener.onCompleted(mQues, System.currentTimeMillis() - mFirstTime);
-//                clean();
             }
             return;
         }

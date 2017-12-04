@@ -1,7 +1,7 @@
 package com.e_eduspace.pointgather;
 
-import com.e_eduspace.sellib.entity.TickedStroke;
-import com.e_eduspace.sellib.entity.TickedTag;
+import com.e_eduspace.ticked.entity.TickedStroke;
+import com.e_eduspace.ticked.entity.TickedTag;
 
 import java.util.Collections;
 import java.util.List;

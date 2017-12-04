@@ -1,6 +1,6 @@
 package com.e_eduspace.pointgather;
 
-import com.e_eduspace.sellib.entity.TickedPoint;
+import com.e_eduspace.ticked.entity.TickedPoint;
 import com.newchinese.coolpensdk.entity.NotePoint;
 
 /**
