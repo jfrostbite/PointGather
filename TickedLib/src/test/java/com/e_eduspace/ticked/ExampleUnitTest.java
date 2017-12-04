@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,6 +28,31 @@ public class ExampleUnitTest {
 
 //        test();
 
+//        test1();
+
+
+        int[] ints = {32,4,3,436,1,22,44,23};
+
+        ArrayList<Integer> integers = new ArrayList<>();
+        for (int anInt : ints) {
+            integers.add(anInt);
+        }
+
+        System.out.println(integers);
+        System.out.println("ceshi");
+
+        Collections.sort(integers, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer integer, Integer t1) {
+                return t1 - integer;
+            }
+        });
+
+        System.out.println(integers);
+        System.out.println("ceshi");
+    }
+
+    private void test1() throws InterruptedException, java.util.concurrent.ExecutionException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<String> submit = executor.submit(new Callable<String>() {
             @Override
@@ -39,7 +66,6 @@ public class ExampleUnitTest {
 
         String s = submit.get();
         System.out.println(s);
-
     }
 
     private void test() {

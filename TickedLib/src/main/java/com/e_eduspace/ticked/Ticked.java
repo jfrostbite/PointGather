@@ -233,6 +233,7 @@ public class Ticked {
             });
             if (mListener != null) {
                 mListener.onCompleted(mQues, System.currentTimeMillis() - mFirstTime);
+                clean();
             }
             return;
         }

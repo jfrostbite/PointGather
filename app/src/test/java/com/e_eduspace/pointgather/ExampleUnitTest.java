@@ -1,7 +1,7 @@
 package com.e_eduspace.pointgather;
 
-import com.e_eduspace.sellib.entity.Question;
-import com.e_eduspace.sellib.entity.TickedTag;
+import com.e_eduspace.ticked.entity.Question;
+import com.e_eduspace.ticked.entity.TickedTag;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
